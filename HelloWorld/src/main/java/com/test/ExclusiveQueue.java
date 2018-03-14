@@ -84,7 +84,6 @@ public class ExclusiveQueue {
             channel3.basicConsume(QUEUE_NAME, true, consumer);
 
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
