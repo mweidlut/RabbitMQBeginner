@@ -5,13 +5,13 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.test</groupId>
         <artifactId>rabbit-mq-beginner</artifactId>
+        <groupId>com.test</groupId>
         <version>1.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>hello-world</artifactId>
+    <artifactId>work-queue</artifactId>
     <version>1.0-SNAPSHOT</version>
 
 </project>
