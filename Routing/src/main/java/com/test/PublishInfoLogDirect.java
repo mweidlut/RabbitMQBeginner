@@ -3,6 +3,8 @@ package com.test;
 import com.rabbitmq.client.BuiltinExchangeType;
 import com.rabbitmq.client.Channel;
 
+import static com.test.StringUtil.joinStrings;
+
 public class PublishInfoLogDirect {
 
     private static final String EXCHANGE_NAME = "direct_logs";
@@ -36,14 +38,4 @@ public class PublishInfoLogDirect {
         return joinStrings(strings, " ", 1);
     }
 
-    private static String joinStrings(String[] strings, String delimiter, int startIndex) {
-        int length = strings.length;
-        if (length == 0) return "";
-        if (length < startIndex) return "";
-        StringBuilder words = new StringBuilder(strings[startIndex]);
-        for (int i = startIndex + 1; i < length; i++) {
-            words.append(delimiter).append(strings[i]);
-        }
-        return words.toString();
-    }
 }

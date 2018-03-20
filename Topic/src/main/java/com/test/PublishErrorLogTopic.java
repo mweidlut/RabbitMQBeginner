@@ -1,39 +1,49 @@
 package com.test;
 
+
 import com.rabbitmq.client.BuiltinExchangeType;
 import com.rabbitmq.client.Channel;
 
-public class PublishErrorLogDirect {
+import static com.test.StringUtil.joinStrings;
 
-    private static final String EXCHANGE_NAME = "direct_logs";
+/**
+ * User: weimeng
+ * Date: 2018/3/20 11:15
+ */
+public class PublishErrorLogTopic {
+
+    private static final String EXCHANGE_NAME = "topic_logs";
 
     public static void main(String[] argv) throws Exception {
 
         Channel channel = ChannelHelper.getChannel();
 
         try {
-            channel.exchangeDeclare(EXCHANGE_NAME, BuiltinExchangeType.DIRECT);
+            channel.exchangeDeclare(EXCHANGE_NAME, BuiltinExchangeType.TOPIC);
 
-            String routingKey = "error";
-            String message = "error message...something...";
+            String routingKey = "quick.error.rabbit";
+            String message = "error...message...";
 
             channel.basicPublish(EXCHANGE_NAME, routingKey, null, message.getBytes("UTF-8"));
+
             System.out.println(" [x] Sent '" + routingKey + "':'" + message + "'");
+
         } finally {
             ChannelHelper.closeChannel(channel);
         }
     }
 
-    private static String getSeverity(String[] strings) {
+    private static String getRouting(String[] strings) {
         if (strings.length < 1)
-            return "info";
+            return "anonymous.info";
         return strings[0];
     }
 
     private static String getMessage(String[] strings) {
         if (strings.length < 2)
             return "Hello World!";
-        return StringUtil.joinStrings(strings, " ", 1);
+        return joinStrings(strings, " ", 1);
     }
+
 
 }
