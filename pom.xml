@@ -18,7 +18,7 @@
     <modules>
         <module>HelloWorld</module>
         <module>WorkQueue</module>
-
+        <module>PublishSubscribe</module>
     </modules>
 
     <dependencies>
