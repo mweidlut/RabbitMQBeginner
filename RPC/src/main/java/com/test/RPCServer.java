@@ -15,6 +15,7 @@ import java.io.IOException;
 public class RPCServer {
 
     private static final String RPC_QUEUE_NAME = "rpc_queue";
+    private static int i=1;
 
     private static int fib(int n) {
         if (n == 0) return 0;
@@ -46,7 +47,7 @@ public class RPCServer {
                         String message = new String(body, "UTF-8");
                         int n = Integer.parseInt(message);
 
-                        System.out.println(" [.] fib(" + message + ")");
+                        System.out.println("Received NO-"+ i++ +" request=> [.] fib(" + message + ")");
                         response += fib(n);
                     } catch (RuntimeException e) {
                         System.out.println(" [.] " + e.toString());
