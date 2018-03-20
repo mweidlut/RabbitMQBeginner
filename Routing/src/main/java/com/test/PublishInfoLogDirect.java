@@ -2,8 +2,6 @@ package com.test;
 
 import com.rabbitmq.client.BuiltinExchangeType;
 import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.Connection;
-import com.rabbitmq.client.ConnectionFactory;
 
 public class PublishInfoLogDirect {
 
@@ -12,15 +10,18 @@ public class PublishInfoLogDirect {
     public static void main(String[] argv) throws Exception {
 
         Channel channel = ChannelHelper.getChannel();
-        channel.exchangeDeclare(EXCHANGE_NAME, BuiltinExchangeType.DIRECT);
 
-        String severity = "info";
-        String message = "info message...something...";
+        try {
+            channel.exchangeDeclare(EXCHANGE_NAME, BuiltinExchangeType.DIRECT);
 
-        channel.basicPublish(EXCHANGE_NAME, severity, null, message.getBytes("UTF-8"));
-        System.out.println(" [x] Sent '" + severity + "':'" + message + "'");
+            String severity = "info";
+            String message = "info message...something...";
 
-        ChannelHelper.closeChannel(channel);
+            channel.basicPublish(EXCHANGE_NAME, severity, null, message.getBytes("UTF-8"));
+            System.out.println(" [x] Sent '" + severity + "':'" + message + "'");
+        } catch (Exception e) {
+            ChannelHelper.closeChannel(channel);
+        }
     }
 
     private static String getSeverity(String[] strings) {

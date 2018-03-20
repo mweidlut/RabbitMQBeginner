@@ -2,8 +2,6 @@ package com.test;
 
 import com.rabbitmq.client.BuiltinExchangeType;
 import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.Connection;
-import com.rabbitmq.client.ConnectionFactory;
 
 public class PublishErrorLogDirect {
 
@@ -12,15 +10,18 @@ public class PublishErrorLogDirect {
     public static void main(String[] argv) throws Exception {
 
         Channel channel = ChannelHelper.getChannel();
-        channel.exchangeDeclare(EXCHANGE_NAME, BuiltinExchangeType.DIRECT);
 
-        String routingKey = "error";
-        String message = "error message...something...";
+        try {
+            channel.exchangeDeclare(EXCHANGE_NAME, BuiltinExchangeType.DIRECT);
 
-        channel.basicPublish(EXCHANGE_NAME, routingKey, null, message.getBytes("UTF-8"));
-        System.out.println(" [x] Sent '" + routingKey + "':'" + message + "'");
+            String routingKey = "error";
+            String message = "error message...something...";
 
-        ChannelHelper.closeChannel(channel);
+            channel.basicPublish(EXCHANGE_NAME, routingKey, null, message.getBytes("UTF-8"));
+            System.out.println(" [x] Sent '" + routingKey + "':'" + message + "'");
+        } finally {
+            ChannelHelper.closeChannel(channel);
+        }
     }
 
     private static String getSeverity(String[] strings) {

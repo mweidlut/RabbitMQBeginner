@@ -22,17 +22,24 @@ public class ChannelHelper {
         return channel;
     }
 
-    public static void closeChannel(Channel channel) throws Exception{
-        if (isNull(channel)){
+    public static void closeChannel(Channel channel) {
+        if (isNull(channel)) {
             return;
         }
 
-        channel.close();
-
-        Connection connection = channel.getConnection();
-        if (nonNull(connection)){
-            connection.close();
+        try {
+            channel.close();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
+        Connection connection = channel.getConnection();
+        if (nonNull(connection)) {
+            try {
+                connection.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
