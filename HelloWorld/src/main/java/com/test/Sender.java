@@ -10,8 +10,8 @@ import org.slf4j.LoggerFactory;
  * User: ROOT
  * Date: 2018/3/13 20:35
  */
-public class Send {
-    private static Logger logger = LoggerFactory.getLogger(Send.class);
+public class Sender {
+    private static Logger logger = LoggerFactory.getLogger(Sender.class);
 
     private final static String QUEUE_NAME = "hello";
 

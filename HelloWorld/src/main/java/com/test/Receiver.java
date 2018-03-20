@@ -14,7 +14,7 @@ import java.io.IOException;
  * User: ROOT
  * Date: 2018/3/13 20:35
  */
-public class Recv {
+public class Receiver {
 
     private final static String QUEUE_NAME = "hello";
 

@@ -14,7 +14,7 @@ import java.io.IOException;
  * User: weimeng
  * Date: 2018/3/14 10:08
  */
-public class Worker {
+public class Worker2 {
 
     private static final String TASK_QUEUE_NAME = "task_queue";
 

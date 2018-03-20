@@ -9,7 +9,7 @@ import com.rabbitmq.client.MessageProperties;
  * User: weimeng
  * Date: 2018/3/15 11:38
  */
-public class NewTask {
+public class Producer1 {
 
     private static final String TASK_QUEUE_NAME = "task_queue";
 
