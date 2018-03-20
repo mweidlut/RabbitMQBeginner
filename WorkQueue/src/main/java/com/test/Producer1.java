@@ -13,14 +13,9 @@ public class Producer1 {
 
     private static final String TASK_QUEUE_NAME = "task_queue";
 
-    public static void main(String[] argv)
-            throws Exception {
+    public static void main(String[] argv) throws Exception {
 
-        ConnectionFactory factory = new ConnectionFactory();
-        factory.setHost("localhost");
-        Connection connection = factory.newConnection();
-        Channel channel = connection.createChannel();
-
+        Channel channel = ChannelHelper.getChannel();
         channel.queueDeclare(TASK_QUEUE_NAME, true, false, false, null);
 
         String message = getMessage(new String[]{"1", "2", "3", "."});
@@ -28,8 +23,7 @@ public class Producer1 {
         channel.basicPublish("", TASK_QUEUE_NAME, MessageProperties.PERSISTENT_TEXT_PLAIN, message.getBytes());
         System.out.println(" [x] Sent '" + message + "'");
 
-        channel.close();
-        connection.close();
+        ChannelHelper.closeChannel(channel);
     }
 
     private static String getMessage(String[] strings) {

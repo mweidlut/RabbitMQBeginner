@@ -19,6 +19,8 @@
         <module>HelloWorld</module>
         <module>WorkQueue</module>
         <module>PublishSubscribe</module>
+        <module>Routing</module>
+        <module>Util</module>
     </modules>
 
     <dependencies>

@@ -19,12 +19,9 @@ public class ReceiveLogs1 {
     private static final String EXCHANGE_NAME = "logs";
 
     public static void main(String[] argv) throws Exception {
-        ConnectionFactory factory = new ConnectionFactory();
-        factory.setHost("localhost");
-        Connection connection = factory.newConnection();
-        Channel channel = connection.createChannel();
-
+        Channel channel = ChannelHelper.getChannel();
         channel.exchangeDeclare(EXCHANGE_NAME, BuiltinExchangeType.FANOUT);
+
         String queueName = channel.queueDeclare().getQueue();
         channel.queueBind(queueName, EXCHANGE_NAME, "");
 

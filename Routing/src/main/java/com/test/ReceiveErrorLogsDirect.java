@@ -11,19 +11,24 @@ import com.rabbitmq.client.Envelope;
 
 import java.io.IOException;
 
-/**
- * User: weimeng
- * Date: 2018/3/20 9:35
- */
-public class ReceiveLogs2 {
-    private static final String EXCHANGE_NAME = "logs";
+public class ReceiveErrorLogsDirect {
+
+    private static final String EXCHANGE_NAME = "direct_logs";
 
     public static void main(String[] argv) throws Exception {
         Channel channel = ChannelHelper.getChannel();
-        channel.exchangeDeclare(EXCHANGE_NAME, BuiltinExchangeType.FANOUT);
 
+        channel.exchangeDeclare(EXCHANGE_NAME, BuiltinExchangeType.DIRECT);
         String queueName = channel.queueDeclare().getQueue();
-        channel.queueBind(queueName, EXCHANGE_NAME, "");
+
+        /*if (argv.length < 1) {
+            System.err.println("Usage: ReceiveLogsDirect [info] [warning] [error]");
+            System.exit(1);
+        }*/
+
+        String routingKey = "error";
+
+        channel.queueBind(queueName, EXCHANGE_NAME, routingKey);
 
         System.out.println(" [*] Waiting for messages. To exit press CTRL+C");
 
@@ -32,7 +37,7 @@ public class ReceiveLogs2 {
             public void handleDelivery(String consumerTag, Envelope envelope,
                                        AMQP.BasicProperties properties, byte[] body) throws IOException {
                 String message = new String(body, "UTF-8");
-                System.out.println(" [x] Received '" + message + "'");
+                System.out.println(" [x] Received '" + envelope.getRoutingKey() + "':'" + message + "'");
             }
         };
         channel.basicConsume(queueName, true, consumer);

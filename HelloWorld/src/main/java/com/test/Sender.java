@@ -16,11 +16,7 @@ public class Sender {
     private final static String QUEUE_NAME = "hello";
 
     public static void main(String[] argv) throws Exception {
-
-        ConnectionFactory factory = new ConnectionFactory();
-        factory.setHost("localhost");
-        Connection connection = factory.newConnection();
-        Channel channel = connection.createChannel();
+        Channel channel = ChannelHelper.getChannel();
 
         channel.queueDeclare(QUEUE_NAME, false, false, false, null);
 
@@ -29,9 +25,7 @@ public class Sender {
 
         System.out.println(" [x] Sent '" + message + "'");
 
-        channel.close();
-        connection.close();
-
+        ChannelHelper.closeChannel(channel);
     }
 
 }

@@ -14,10 +14,7 @@ public class PublishLog {
     private static final String EXCHANGE_NAME = "logs";
 
     public static void main(String[] argv) throws Exception {
-        ConnectionFactory factory = new ConnectionFactory();
-        factory.setHost("localhost");
-        Connection connection = factory.newConnection();
-        Channel channel = connection.createChannel();
+        Channel channel = ChannelHelper.getChannel();
 
         channel.exchangeDeclare(EXCHANGE_NAME, BuiltinExchangeType.FANOUT);
 
@@ -26,8 +23,7 @@ public class PublishLog {
         channel.basicPublish(EXCHANGE_NAME, "", null, message.getBytes("UTF-8"));
         System.out.println(" [x] Sent '" + message + "'");
 
-        channel.close();
-        connection.close();
+        ChannelHelper.closeChannel(channel);
     }
 
     private static String getMessage(String[] strings) {
