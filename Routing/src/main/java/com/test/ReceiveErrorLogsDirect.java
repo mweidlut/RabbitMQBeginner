@@ -26,9 +26,7 @@ public class ReceiveErrorLogsDirect {
             System.exit(1);
         }*/
 
-        String routingKey = "error";
-
-        channel.queueBind(queueName, EXCHANGE_NAME, routingKey);
+        channel.queueBind(queueName, EXCHANGE_NAME, "error");
 
         System.out.println(" [*] Waiting for messages. To exit press CTRL+C");
 

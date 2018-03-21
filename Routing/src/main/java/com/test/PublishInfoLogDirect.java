@@ -16,11 +16,11 @@ public class PublishInfoLogDirect {
         try {
             channel.exchangeDeclare(EXCHANGE_NAME, BuiltinExchangeType.DIRECT);
 
-            String severity = "info";
+            String routingKey = "info";
             String message = "info message...something...";
 
-            channel.basicPublish(EXCHANGE_NAME, severity, null, message.getBytes("UTF-8"));
-            System.out.println(" [x] Sent '" + severity + "':'" + message + "'");
+            channel.basicPublish(EXCHANGE_NAME, routingKey, null, message.getBytes("UTF-8"));
+            System.out.println(" [x] Sent '" + routingKey + "':'" + message + "'");
         } catch (Exception e) {
             ChannelHelper.closeChannel(channel);
         }

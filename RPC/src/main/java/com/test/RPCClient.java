@@ -42,6 +42,7 @@ public class RPCClient {
         }
     }
 
+    //call
     public String call(String message) throws IOException, InterruptedException {
         final String corrId = UUID.randomUUID().toString();
 
