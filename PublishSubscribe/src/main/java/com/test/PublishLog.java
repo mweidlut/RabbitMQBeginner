@@ -18,10 +18,12 @@ public class PublishLog {
 
         channel.exchangeDeclare(EXCHANGE_NAME, BuiltinExchangeType.FANOUT);
 
-        String message = getMessage(argv);
+        for(int i=1; i<=2; i++){
+            String message = "Hello World-"+i;
 
-        channel.basicPublish(EXCHANGE_NAME, "", null, message.getBytes("UTF-8"));
-        System.out.println(" [x] Sent '" + message + "'");
+            channel.basicPublish(EXCHANGE_NAME, "diff-a", null, message.getBytes("UTF-8"));
+            System.out.println(" [x] Sent '" + message + "'");
+        }
 
         ChannelHelper.closeChannel(channel);
     }
