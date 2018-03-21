@@ -18,10 +18,11 @@ public class Producer1 {
         Channel channel = ChannelHelper.getChannel();
         channel.queueDeclare(TASK_QUEUE_NAME, true, false, false, null);
 
-        String message = getMessage(new String[]{"1", "2", "3", "."});
-
-        channel.basicPublish("", TASK_QUEUE_NAME, MessageProperties.PERSISTENT_TEXT_PLAIN, message.getBytes());
-        System.out.println(" [x] Sent '" + message + "'");
+        for (int i=0; i<10;i++){
+            String message = getMessage(new String[]{"Task", ""+i, "."});
+            channel.basicPublish("", TASK_QUEUE_NAME, MessageProperties.PERSISTENT_TEXT_PLAIN, message.getBytes());
+            System.out.println(" [x] Sent '" + message + "'");
+        }
 
         ChannelHelper.closeChannel(channel);
     }

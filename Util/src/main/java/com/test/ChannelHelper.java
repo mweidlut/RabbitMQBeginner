@@ -31,6 +31,7 @@ public class ChannelHelper {
 
         try {
             channel.close();
+            System.out.println("Closed channel...");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -39,6 +40,7 @@ public class ChannelHelper {
         if (nonNull(connection)) {
             try {
                 connection.close();
+                System.out.println("Closed connection...");
             } catch (Exception e) {
                 e.printStackTrace();
             }
