@@ -23,7 +23,7 @@ public class ReceiveLogs1 {
         channel.exchangeDeclare(EXCHANGE_NAME, BuiltinExchangeType.FANOUT);
 
         String queueName = channel.queueDeclare().getQueue();
-        channel.queueBind(queueName, EXCHANGE_NAME, "diff-b");
+        channel.queueBind(queueName, EXCHANGE_NAME, "key-b");
 
         System.out.println(" [*] Waiting for messages. To exit press CTRL+C");
 
