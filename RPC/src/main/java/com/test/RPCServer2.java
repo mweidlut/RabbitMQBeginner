@@ -12,7 +12,7 @@ import java.io.IOException;
  * User: weimeng
  * Date: 2018/3/20 11:36
  */
-public class RPCServer {
+public class RPCServer2 {
 
     private static final String RPC_QUEUE_NAME = "rpc_queue";
     private static int i=1;

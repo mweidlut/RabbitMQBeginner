@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.util.UUID;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 /**
  * User: weimeng
@@ -16,8 +17,8 @@ import java.util.concurrent.BlockingQueue;
  */
 public class RPCClient {
 
+    private static String requestQueueName = "rpc_queue";
     private Channel channel;
-    private String requestQueueName = "rpc_queue";
     private String replyQueueName;
 
     public RPCClient() throws Exception {
@@ -30,9 +31,10 @@ public class RPCClient {
     public static void main(String[] argv) throws Exception {
         RPCClient fibonacciRpc = new RPCClient();
         try {
-            System.out.println(" [x] Requesting fib(30)");
+            Integer targetValue = 12;
+            System.out.println(" [x] Requesting fib("+targetValue.toString()+")");
 
-            String response = fibonacciRpc.call("30");
+            String response = fibonacciRpc.call(targetValue.toString());
 
             System.out.println(" [.] Got '" + response + "'");
         } catch (IOException | InterruptedException e) {
@@ -61,6 +63,12 @@ public class RPCClient {
             public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
                 if (properties.getCorrelationId().equals(corrId)) {
                     response.offer(new String(body, "UTF-8"));
+                    /*try {
+                        response.offer(new String(body, "UTF-8"), 1, TimeUnit.SECONDS);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                        response.offer("unknown");
+                    }*/
                 }
             }
         });
