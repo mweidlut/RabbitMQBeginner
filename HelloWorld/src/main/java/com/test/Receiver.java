@@ -2,8 +2,6 @@ package com.test;
 
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.Connection;
-import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.Consumer;
 import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
@@ -20,7 +18,7 @@ public class Receiver {
 
     public static void main(String[] argv) throws Exception {
         Channel channel = ChannelHelper.getChannel();
-        channel.queueDeclare(QUEUE_NAME, false, false, false, null);
+        channel.queueDeclare(QUEUE_NAME, true, false, false, null);
 
         System.out.println(" [*] Waiting for messages. To exit press CTRL+C");
 
