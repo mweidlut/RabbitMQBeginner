@@ -19,6 +19,8 @@ public class PublishErrorLogDirect {
 
             channel.basicPublish(EXCHANGE_NAME, routingKey, null, message.getBytes("UTF-8"));
             System.out.println(" [x] Sent '" + routingKey + "':'" + message + "'");
+        } catch (Exception e) {
+            e.printStackTrace();
         } finally {
             ChannelHelper.closeChannel(channel);
         }

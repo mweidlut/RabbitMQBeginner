@@ -21,6 +21,8 @@ public class ReceiveErrorLogsDirect {
         channel.exchangeDeclare(EXCHANGE_NAME, BuiltinExchangeType.DIRECT);
         String queueName = channel.queueDeclare().getQueue();
 
+        System.out.println("Error-queue-name:" + queueName);
+
         /*if (argv.length < 1) {
             System.err.println("Usage: ReceiveLogsDirect [info] [warning] [error]");
             System.exit(1);
