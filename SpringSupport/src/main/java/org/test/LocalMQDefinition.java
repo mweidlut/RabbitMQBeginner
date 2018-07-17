@@ -30,7 +30,7 @@ public class LocalMQDefinition {
     private RabbitMQConfig rabbitMQConfig;
 
     @Primary
-    @Bean
+    @Bean(name = "localConnectionFactory")
     public ConnectionFactory localConnectionFactory() {
         CachingConnectionFactory connectionFactory = new CachingConnectionFactory();
         connectionFactory.setAddresses(rabbitMQConfig.getLocal().getAddresses());
@@ -41,41 +41,58 @@ public class LocalMQDefinition {
     }
 
     @Bean(name = "localRabbitListenerContainerFactory")
-    public SimpleRabbitListenerContainerFactory localRabbitListenerContainerFactory(@Autowired ConnectionFactory localConnectionFactory) {
+    public SimpleRabbitListenerContainerFactory localRabbitListenerContainerFactory(@Autowired @Qualifier("localConnectionFactory") ConnectionFactory localConnectionFactory) {
         SimpleRabbitListenerContainerFactory factory = new SimpleRabbitListenerContainerFactory();
         factory.setConnectionFactory(localConnectionFactory);
         return factory;
     }
 
-    @Bean
-    public AmqpAdmin localAmqpAdmin(@Autowired ConnectionFactory localConnectionFactory) {
-        RabbitAdmin admin = new RabbitAdmin(localConnectionFactory);
-        admin.setAutoStartup(true);
-        return admin;
-    }
-
     @Primary
     @Bean
-    public RabbitTemplate localRabbitTemplate(@Autowired ConnectionFactory localConnectionFactory) {
+    public RabbitTemplate localRabbitTemplate(@Autowired @Qualifier("localConnectionFactory") ConnectionFactory localConnectionFactory) {
         RabbitTemplate template = new RabbitTemplate(localConnectionFactory);
         //template.setMessageConverter(new Jackson2JsonMessageConverter());
         return template;
     }
 
+    @Primary
     @Bean
-    public Queue localQueue() {
+    public AmqpAdmin localAmqpAdmin(@Autowired @Qualifier("localConnectionFactory") ConnectionFactory localConnectionFactory) {
+        RabbitAdmin admin = new RabbitAdmin(localConnectionFactory);
+        admin.setAutoStartup(true);
+
+        Queue queue = new Queue(local_queue_name, false, false, true);
+        TopicExchange topicExchange = new TopicExchange(local_exchange_name);
+        Binding binding = BindingBuilder.bind(queue).to(topicExchange).with("#");//all topic
+
+        admin.declareQueue(queue);
+        admin.declareExchange(topicExchange);
+        admin.declareBinding(binding);
+
+        return admin;
+    }
+
+
+    /*
+    //如果使用下面的声明方式，queue和exchange会被注册到两个mq源上
+    @Bean
+    public Queue localQueue(@Autowired AmqpAdmin localAmqpAdmin) {
         //Declares a non-exclusive, autodelete, non-durable queue.
         Queue queue = new Queue(local_queue_name, false, false, true);
+        //localAmqpAdmin.declareQueue(queue);
         return queue;
     }
 
     @Bean
-    public TopicExchange localTopicExchange() {
-        return new TopicExchange(local_exchange_name);
+    public TopicExchange localTopicExchange(@Autowired AmqpAdmin localAmqpAdmin) {
+        TopicExchange topicExchange = new TopicExchange(local_exchange_name);
+        //localAmqpAdmin.declareExchange(topicExchange);
+        return topicExchange;
     }
 
     @Bean
     public Binding binding(@Autowired Queue localQueue, @Autowired TopicExchange localTopicExchange) {
         return BindingBuilder.bind(localQueue).to(localTopicExchange).with("#"); //all topic
-    }
+    }*/
+
 }

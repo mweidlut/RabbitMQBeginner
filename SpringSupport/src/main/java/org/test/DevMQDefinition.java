@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
@@ -29,8 +28,7 @@ public class DevMQDefinition {
     @Inject
     private RabbitMQConfig rabbitMQConfig;
 
-//    @Primary
-    @Bean
+    @Bean(name = "devConnectionFactory")
     public ConnectionFactory devConnectionFactory() {
         CachingConnectionFactory connectionFactory = new CachingConnectionFactory();
         connectionFactory.setAddresses(rabbitMQConfig.getDev().getAddresses());
@@ -41,42 +39,55 @@ public class DevMQDefinition {
     }
 
     @Bean(name = "devRabbitListenerContainerFactory")
-    public SimpleRabbitListenerContainerFactory devRabbitListenerContainerFactory(@Autowired ConnectionFactory devConnectionFactory) {
+    public SimpleRabbitListenerContainerFactory devRabbitListenerContainerFactory(@Autowired @Qualifier("devConnectionFactory") ConnectionFactory devConnectionFactory) {
         SimpleRabbitListenerContainerFactory factory = new SimpleRabbitListenerContainerFactory();
         factory.setConnectionFactory(devConnectionFactory);
         return factory;
     }
 
     @Bean
-    public AmqpAdmin devAmqpAdmin(@Autowired ConnectionFactory devConnectionFactory) {
-        RabbitAdmin admin = new RabbitAdmin(devConnectionFactory);
-        admin.setAutoStartup(false);
-        return admin;
-    }
-
-//    @Primary
-    @Bean
-    public RabbitTemplate devRabbitTemplate(@Autowired ConnectionFactory devConnectionFactory) {
+    public RabbitTemplate devRabbitTemplate(@Autowired @Qualifier("devConnectionFactory") ConnectionFactory devConnectionFactory) {
         RabbitTemplate template = new RabbitTemplate(devConnectionFactory);
         //template.setMessageConverter(new Jackson2JsonMessageConverter());
         return template;
     }
 
     @Bean
-    public Queue devQueue() {
+    public AmqpAdmin devAmqpAdmin(@Autowired @Qualifier("devConnectionFactory") ConnectionFactory devConnectionFactory) {
+        RabbitAdmin admin = new RabbitAdmin(devConnectionFactory);
+        admin.setAutoStartup(true);
 
+        Queue queue = new Queue(dev_queue_name, false, false, true);
+        TopicExchange topicExchange = new TopicExchange(dev_exchange_name);
+        Binding binding = BindingBuilder.bind(queue).to(topicExchange).with("#");//all topic
+
+        admin.declareQueue(queue);
+        admin.declareExchange(topicExchange);
+        admin.declareBinding(binding);
+
+        return admin;
+    }
+
+
+    /*
+    //如果使用下面的声明方式，queue和exchange会被注册到两个mq源上
+    @Bean
+    public Queue devQueue(@Autowired AmqpAdmin devAmqpAdmin) {
         //Declares a non-exclusive, autodelete, non-durable queue.
         Queue queue = new Queue(dev_queue_name, false, false, true);
+        //devAmqpAdmin.declareQueue(queue);
         return queue;
     }
 
     @Bean
-    public TopicExchange devTopicExchange() {
-        return new TopicExchange(dev_exchange_name);
+    public TopicExchange devTopicExchange(@Autowired AmqpAdmin devAmqpAdmin) {
+        TopicExchange topicExchange = new TopicExchange(dev_exchange_name);
+        //devAmqpAdmin.declareExchange(topicExchange);
+        return topicExchange;
     }
 
     @Bean
     public Binding binding(@Autowired Queue devQueue, @Autowired TopicExchange devTopicExchange) {
         return BindingBuilder.bind(devQueue).to(devTopicExchange).with("#"); //all topic
-    }
+    }*/
 }
