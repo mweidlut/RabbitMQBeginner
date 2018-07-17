@@ -30,8 +30,8 @@ public class LocalMQDefinition {
     private RabbitMQConfig rabbitMQConfig;
 
     @Primary
-    @Bean(name = "localConnectFactory")
-    public ConnectionFactory localConnectFactory() {
+    @Bean
+    public ConnectionFactory localConnectionFactory() {
         CachingConnectionFactory connectionFactory = new CachingConnectionFactory();
         connectionFactory.setAddresses(rabbitMQConfig.getLocal().getAddresses());
         connectionFactory.setUsername(rabbitMQConfig.getLocal().getUsername());
@@ -41,22 +41,22 @@ public class LocalMQDefinition {
     }
 
     @Bean(name = "localRabbitListenerContainerFactory")
-    public SimpleRabbitListenerContainerFactory uRabbitListenerContainerFactory(@Qualifier("localConnectFactory") ConnectionFactory connectionFactory) {
+    public SimpleRabbitListenerContainerFactory localRabbitListenerContainerFactory(@Autowired ConnectionFactory localConnectionFactory) {
         SimpleRabbitListenerContainerFactory factory = new SimpleRabbitListenerContainerFactory();
-        factory.setConnectionFactory(connectionFactory);
+        factory.setConnectionFactory(localConnectionFactory);
         return factory;
     }
 
-    @Bean(name = "localAmqpAdmin")
-    public AmqpAdmin amqpAdmin(@Qualifier("localConnectFactory") ConnectionFactory connectionFactory) {
-        RabbitAdmin admin = new RabbitAdmin(connectionFactory);
+    @Bean
+    public AmqpAdmin localAmqpAdmin(@Autowired ConnectionFactory localConnectionFactory) {
+        RabbitAdmin admin = new RabbitAdmin(localConnectionFactory);
         admin.setAutoStartup(true);
         return admin;
     }
 
     @Primary
     @Bean
-    public RabbitTemplate localRabbitTemplate(@Autowired @Qualifier("localConnectFactory") ConnectionFactory localConnectionFactory) {
+    public RabbitTemplate localRabbitTemplate(@Autowired ConnectionFactory localConnectionFactory) {
         RabbitTemplate template = new RabbitTemplate(localConnectionFactory);
         //template.setMessageConverter(new Jackson2JsonMessageConverter());
         return template;

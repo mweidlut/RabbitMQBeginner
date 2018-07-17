@@ -30,8 +30,8 @@ public class DevMQDefinition {
     private RabbitMQConfig rabbitMQConfig;
 
 //    @Primary
-    @Bean(name = "devConnectFactory")
-    public ConnectionFactory bConnectFactory() {
+    @Bean
+    public ConnectionFactory devConnectionFactory() {
         CachingConnectionFactory connectionFactory = new CachingConnectionFactory();
         connectionFactory.setAddresses(rabbitMQConfig.getDev().getAddresses());
         connectionFactory.setUsername(rabbitMQConfig.getDev().getUsername());
@@ -41,22 +41,22 @@ public class DevMQDefinition {
     }
 
     @Bean(name = "devRabbitListenerContainerFactory")
-    public SimpleRabbitListenerContainerFactory brabbitListenerContainerFactory(@Qualifier("devConnectFactory") ConnectionFactory connectionFactory) {
+    public SimpleRabbitListenerContainerFactory devRabbitListenerContainerFactory(@Autowired ConnectionFactory devConnectionFactory) {
         SimpleRabbitListenerContainerFactory factory = new SimpleRabbitListenerContainerFactory();
-        factory.setConnectionFactory(connectionFactory);
+        factory.setConnectionFactory(devConnectionFactory);
         return factory;
     }
 
-    @Bean(name = "devAmqpAdmin")
-    public AmqpAdmin devAmqpAdmin(@Qualifier("devConnectFactory") ConnectionFactory connectionFactory) {
-        RabbitAdmin admin = new RabbitAdmin(connectionFactory);
-        admin.setAutoStartup(true);
+    @Bean
+    public AmqpAdmin devAmqpAdmin(@Autowired ConnectionFactory devConnectionFactory) {
+        RabbitAdmin admin = new RabbitAdmin(devConnectionFactory);
+        admin.setAutoStartup(false);
         return admin;
     }
 
 //    @Primary
     @Bean
-    public RabbitTemplate devRabbitTemplate(@Autowired @Qualifier("devConnectFactory") ConnectionFactory devConnectionFactory) {
+    public RabbitTemplate devRabbitTemplate(@Autowired ConnectionFactory devConnectionFactory) {
         RabbitTemplate template = new RabbitTemplate(devConnectionFactory);
         //template.setMessageConverter(new Jackson2JsonMessageConverter());
         return template;
@@ -64,6 +64,7 @@ public class DevMQDefinition {
 
     @Bean
     public Queue devQueue() {
+
         //Declares a non-exclusive, autodelete, non-durable queue.
         Queue queue = new Queue(dev_queue_name, false, false, true);
         return queue;
