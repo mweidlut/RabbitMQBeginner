@@ -1,0 +1,11 @@
+rabbitmq:
+  local:
+    addresses: localhost:5672
+    username: guest
+    password: guest
+    vhost: /
+  dev:
+    addresses: 10.139.60.131:5672
+    username: kkuser
+    password: kkuser123
+    vhost: /

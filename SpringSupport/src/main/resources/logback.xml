@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<!-- Console -->
+	<appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>
+				%date{yyyy-MM-dd HH:mm:ss.SSS} | %highlight(%-5level) | %green(%thread) | %cyan(%logger) | %msg%n
+				<!--%date{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n-->
+			</pattern>
+		</encoder>
+	</appender>
+
+	<!-- INFO -->
+	<appender name="InfoRollingFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>/var/logs/spring-support.log</file>
+		<encoder>
+			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
+		</encoder>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<FileNamePattern>/var/logs/spring-support.%d{yyyy-MM-dd}.%i.log.zip</FileNamePattern>
+			<timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<maxFileSize>200MB</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy>
+		</rollingPolicy>
+	</appender>
+
+	<!-- project default level -->
+	<logger name="org.test" level="INFO" />
+
+	<root level="INFO">
+		<appender-ref ref="console" />
+		<appender-ref ref="InfoRollingFile" />
+	</root>
+</configuration>
