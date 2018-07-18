@@ -1,3 +1,6 @@
+server:
+  port: 8080
+
 rabbitmq:
   local:
     addresses: localhost:5672

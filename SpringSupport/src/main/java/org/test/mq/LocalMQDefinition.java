@@ -1,10 +1,11 @@
-package org.test;
+package org.test.mq;
 
 import org.springframework.amqp.core.AmqpAdmin;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.core.TopicExchange;
+import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
@@ -19,12 +20,13 @@ import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
 
+@EnableRabbit
 @Component
 @Configuration
 public class LocalMQDefinition {
 
     public static final String local_queue_name = "local_queue_test";
-    private static final String local_exchange_name = "local_exchange_test";
+    public static final String local_exchange_name = "local_exchange_test";
 
     @Inject
     private RabbitMQConfig rabbitMQConfig;
@@ -48,14 +50,13 @@ public class LocalMQDefinition {
     }
 
     @Primary
-    @Bean
+    @Bean("localRabbitTemplate")
     public RabbitTemplate localRabbitTemplate(@Autowired @Qualifier("localConnectionFactory") ConnectionFactory localConnectionFactory) {
         RabbitTemplate template = new RabbitTemplate(localConnectionFactory);
         //template.setMessageConverter(new Jackson2JsonMessageConverter());
         return template;
     }
 
-    @Primary
     @Bean
     public AmqpAdmin localAmqpAdmin(@Autowired @Qualifier("localConnectionFactory") ConnectionFactory localConnectionFactory) {
         RabbitAdmin admin = new RabbitAdmin(localConnectionFactory);

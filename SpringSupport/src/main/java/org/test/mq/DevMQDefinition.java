@@ -1,10 +1,11 @@
-package org.test;
+package org.test.mq;
 
 import org.springframework.amqp.core.AmqpAdmin;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.core.TopicExchange;
+import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
@@ -18,12 +19,13 @@ import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
 
+@EnableRabbit
 @Component
 @Configuration
 public class DevMQDefinition {
 
     public static final String dev_queue_name = "dev_queue_test";
-    private static final String dev_exchange_name = "dev_exchange_test";
+    public static final String dev_exchange_name = "dev_exchange_test";
 
     @Inject
     private RabbitMQConfig rabbitMQConfig;
@@ -45,7 +47,7 @@ public class DevMQDefinition {
         return factory;
     }
 
-    @Bean
+    @Bean(name = "devRabbitTemplate")
     public RabbitTemplate devRabbitTemplate(@Autowired @Qualifier("devConnectionFactory") ConnectionFactory devConnectionFactory) {
         RabbitTemplate template = new RabbitTemplate(devConnectionFactory);
         //template.setMessageConverter(new Jackson2JsonMessageConverter());

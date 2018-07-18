@@ -1,4 +1,4 @@
-package org.test;
+package org.test.mq;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
