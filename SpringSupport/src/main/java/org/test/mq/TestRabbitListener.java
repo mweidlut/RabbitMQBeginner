@@ -18,11 +18,6 @@ public class TestRabbitListener {
         logger.info(">>>receive local msg: {}", message);
     }
 
-    @RabbitHandler
-    @RabbitListener(queues = LocalMQDefinition.local_queue_name, containerFactory = "localRabbitListenerContainerFactory")
-    public void localHandleMessage(@Payload Object message) throws Exception {
-        logger.info(">>>receive local msg2: {}", message);
-    }
 
     @RabbitHandler
     @RabbitListener(queues = DevMQDefinition.dev_queue_name, containerFactory = "devRabbitListenerContainerFactory")
@@ -30,9 +25,4 @@ public class TestRabbitListener {
         logger.info(">>>receive dev msg: {}", message);
     }
 
-    @RabbitHandler
-    @RabbitListener(queues = DevMQDefinition.dev_queue_name, containerFactory = "devRabbitListenerContainerFactory")
-    public void devHandleMessage(@Payload Object message) throws Exception {
-        logger.info(">>>receive dev msg2: {}", message);
-    }
 }
